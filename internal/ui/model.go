@@ -282,6 +282,11 @@ type Model struct {
 	confirm     pendingConfirm
 	confirmRect modalRect
 
+	// 快捷键帮助浮层。
+	helpOpen   bool
+	helpScroll int
+	helpRect   modalRect
+
 	// 右键上下文菜单。
 	ctxMenuOpen  bool
 	ctxMenuX     int
@@ -709,6 +714,9 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	}
 
+	if m.helpOpen {
+		return m.handleHelpKey(key)
+	}
 	if m.confirm.kind != confirmNone {
 		return m.handleConfirmKey(key)
 	}
@@ -788,6 +796,9 @@ func (m *Model) handleMainKey(msg tea.KeyMsg, key string) (tea.Model, tea.Cmd) {
 	case "ctrl+q":
 		m.backToManager()
 		return m, nil
+	case "?", "f1":
+		m.openHelp()
+		return m, nil
 	}
 
 	switch m.focus {
@@ -853,6 +864,9 @@ func (m *Model) handleMgrKey(msg tea.KeyMsg, key string) (tea.Model, tea.Cmd) {
 	// Ctrl+I 与 Tab 同为控制码 9，Bubble Tea 只会解析成 "tab"，故两者一并匹配。
 	case "tab", "ctrl+i":
 		m.openMgrImportModal()
+		return m, nil
+	case "?", "f1":
+		m.openHelp()
 		return m, nil
 	}
 	return m, nil
@@ -2075,6 +2089,9 @@ func (m *Model) handleMouse(msg tea.MouseMsg) (tea.Model, tea.Cmd) {
 	isWheelUp := msg.Button == tea.MouseButtonWheelUp
 	isWheelDown := msg.Button == tea.MouseButtonWheelDown
 
+	if m.helpOpen {
+		return m.handleHelpMouse(msg, isClick, isWheelUp, isWheelDown)
+	}
 	if m.confirm.kind != confirmNone {
 		return m.handleConfirmMouse(msg, isClick)
 	}

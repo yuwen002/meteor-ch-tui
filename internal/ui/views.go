@@ -29,6 +29,9 @@ func (m *Model) View() string {
 		if m.sheetPickerOpen {
 			out = m.renderSheetPicker(out)
 		}
+		if m.helpOpen {
+			out = m.renderHelp(out)
+		}
 		return out
 	}
 
@@ -63,6 +66,9 @@ func (m *Model) View() string {
 	}
 	if m.sheetPickerOpen {
 		out = m.renderSheetPicker(out)
+	}
+	if m.helpOpen {
+		out = m.renderHelp(out)
 	}
 	return out
 }
