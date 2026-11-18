@@ -43,8 +43,9 @@ go test ./... -count=1
 - [x] `model.go` 第一批拆分：`model.go` 2712 行降至 1733 行
   - 迁出到 `history.go`、`confirm.go`、`context_menu.go`、`sidebar.go`、`query.go`、`config_modal.go`、`protocol.go`、`navigation.go`
   - 通用工具函数并入 `util.go`
-- [ ] `model.go` 第二批拆分：迁出 manager 域到 `manager.go`
-- [ ] 进一步缩小 `model.go`：仅保留结构体、构造、生命周期与全局分发
+- [x] `model.go` 第二批拆分：迁出 manager 域到 `manager.go`，`model.go` 1733 行降至 780 行
+  - `manager.go` 约 970 行，包含连接增删改查、分组、测试连接、导入导出弹窗与鼠标处理
+- [x] 进一步缩小 `model.go`：仅保留结构体、构造、生命周期与全局分发（剩余 11 个函数）
 - [ ] 跨平台构建验证：`./build.ps1 -All`
 - [ ] 增加 `CHANGELOG.md`
 - [ ] 真实终端人工点击验收（需在有终端环境中完成）
@@ -107,12 +108,13 @@ go test ./... -count=1
 | 2026-11-18 | `90b0582` | 完善连接导入导出、目录/文件浏览、热区、测试与仓库清理 |
 | 2026-11-18 | `f52d8e6` | 添加 README、应用内帮助浮层与关于我们信息 |
 | 2026-11-18 | 见 `git log` | 按域拆分 `model.go`，新增本计划文件 |
+| 2026-11-18 | 见 `git log` | 迁出 manager 域到 `manager.go`，`model.go` 降至 780 行 |
 
 ## 下一步
 
 优先完成阶段二剩余事项：
 
-1. 继续把 manager 域从 `model.go` 迁出到 `manager.go`。
-2. 让 `model.go` 只保留结构体、构造、生命周期与全局事件分发。
-3. 执行 `./build.ps1 -All` 验证四平台构建。
-4. 增加 `CHANGELOG.md`，之后进入阶段三稳定性建设。
+1. 执行 `./build.ps1 -All` 验证四平台构建。
+2. 增加 `CHANGELOG.md`，汇总从 `90b0582` 起的变更。
+3. 在有终端环境中完成真实人工点击验收。
+4. 阶段二完成后进入阶段三：异常路径测试矩阵与发布前检查清单。
