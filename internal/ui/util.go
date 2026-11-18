@@ -2,9 +2,12 @@ package ui
 
 import (
 	"strings"
+	"time"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/x/ansi"
+
+	"github.com/yuwen002/meteor-ch-tui/internal/configstore"
 )
 
 // padCell 基于 ansi.Truncate/StringWidth 实现 ANSI 安全的单元格截断与填充。
@@ -157,4 +160,37 @@ func clampInt(v, low, high int) int {
 // runeWidth 返回字符串的显示宽度（含全角/emoji）。
 func runeWidth(s string) int {
 	return lipgloss.Width(s)
+}
+
+func (m *Model) persistDirs() {
+	_ = configstore.SaveUIState(configstore.UIState{
+		LastExportDir: m.lastExportDir,
+		LastImportDir: m.lastImportDir,
+	})
+}
+
+func (m *Model) setLastExportDir(dir string) {
+	if m.lastExportDir == dir {
+		return
+	}
+	m.lastExportDir = dir
+	m.persistDirs()
+}
+
+func (m *Model) setLastImportDir(dir string) {
+	if m.lastImportDir == dir {
+		return
+	}
+	m.lastImportDir = dir
+	m.persistDirs()
+}
+
+func (m *Model) isDoubleClick(x, y int) bool {
+	now := time.Now().UnixMilli()
+	if m.lastClickX == x && m.lastClickY == y && now-m.lastClickTime < 700 {
+		m.lastClickX, m.lastClickY, m.lastClickTime = -1, -1, 0
+		return true
+	}
+	m.lastClickX, m.lastClickY, m.lastClickTime = x, y, now
+	return false
 }
