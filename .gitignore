@@ -1,0 +1,19 @@
+# IDE
+.idea/
+
+# Build outputs
+dist/
+meteor-ch-tui*.exe
+
+# Working notes
+code-review-plan.md
+
+# Generated exports
+connections_*.json
+connections_*.csv
+connections_*.tsv
+connections_*.xlsx
+query_result_*.tsv
+query_result_*.csv
+query_result_*.json
+query_result_*.xlsx
