@@ -1,0 +1,51 @@
+internal/ui/navigation.go
+  h_a3f313f3d96276 3-4
+  s_bf4ceae60be48c::t_2a88adbf774934 1-2,5-59
+internal/ui/sidebar.go
+  h_a3f313f3d96276 4-5
+  s_bf4ceae60be48c::t_2a88adbf774934 1-2,10-255
+internal/ui/config_modal.go
+  s_bf4ceae60be48c::t_2a88adbf774934 1-2,11-140
+  s_bf4ceae60be48c::t_ee68737d123925 4-6
+internal/ui/protocol.go
+  s_bf4ceae60be48c::t_31b522eea0f12d 4-6
+  s_bf4ceae60be48c::t_9b1ff7e2722946 3,7-10
+  s_bf4ceae60be48c::t_2a88adbf774934 1-2,11-62
+PLAN.md
+  s_bf4ceae60be48c::t_321d87faa00a58 109
+  s_bf4ceae60be48c::t_c7d2ca696b82f0 1-108,110-118
+internal/ui/context_menu.go
+  s_bf4ceae60be48c::t_2a88adbf774934 1-2,7-134
+internal/ui/confirm.go
+  s_bf4ceae60be48c::t_2a88adbf774934 1-2,5,7,10-99
+internal/ui/history.go
+  s_bf4ceae60be48c::t_2a88adbf774934 1-2,5,8-108
+internal/ui/query.go
+  h_a3f313f3d96276 3-7
+  s_bf4ceae60be48c::t_2a88adbf774934 1-2,8-122
+internal/ui/util.go
+  s_bf4ceae60be48c::t_eb4dec74a5fc76 9-10
+  s_bf4ceae60be48c::t_2a88adbf774934 164-196
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "609abf4bb6939746cb83b866ecd6c39d09109ba5",
+  "prompts": {},
+  "humans": {
+    "h_a3f313f3d96276": {
+      "author": "liuxingyu <yuwen002@163.com>"
+    }
+  },
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 1248
+    }
+  }
+}
