@@ -1,0 +1,29 @@
+internal/ui/manager.go
+  s_bf4ceae60be48c::t_4180a7907716cc 1-2,16-972
+  s_bf4ceae60be48c::t_47ef20f58cef26 3-15
+PLAN.md
+  s_bf4ceae60be48c::t_70e2e80991c732 46-48,117-118,120
+  h_a3f313f3d96276 111,119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "fd621d85e0f834e76348620d96e57e1236e29448",
+  "prompts": {},
+  "humans": {
+    "h_a3f313f3d96276": {
+      "author": "liuxingyu <yuwen002@163.com>"
+    }
+  },
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 1092
+    }
+  }
+}
