@@ -12,6 +12,10 @@ import (
 type UIState struct {
 	LastExportDir string `json:"last_export_dir,omitempty"`
 	LastImportDir string `json:"last_import_dir,omitempty"`
+
+	// ResultColumnWidths / ResultHiddenColumns 以结果列签名（列名的固定顺序拼接）为 key。
+	ResultColumnWidths  map[string]map[string]int `json:"result_column_widths,omitempty"`
+	ResultHiddenColumns map[string][]string       `json:"result_hidden_columns,omitempty"`
 }
 
 func uiStatePath() string {

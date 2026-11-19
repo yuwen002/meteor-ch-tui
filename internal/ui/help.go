@@ -22,7 +22,7 @@ func helpContentLines() []string {
 		"   Tab/Shift+Tab 切换焦点 · Ctrl+N 打开连接配置",
 		"   Alt+Enter/Ctrl+S/F5 执行 SQL · Ctrl+R 活跃查询",
 		"   Ctrl+Y 复制 TSV · Ctrl+E 导出结果 · Ctrl+H 历史",
-		"   鼠标右键菜单 · Ctrl+Q 返回管理器",
+		"   c 列设置（显示/隐藏、列宽） · 鼠标右键菜单 · Ctrl+Q 返回管理器",
 		"",
 		" 导入与导出",
 		"   Ctrl+O 导入/复制 · Enter 保存文件 · Tab 覆盖开关/包含密码",

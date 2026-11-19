@@ -219,6 +219,7 @@ type Model struct {
 	fileBrowserFilter        textinput.Model
 	fileBrowserFilterFocused bool
 	fileBrowserSortMode      int
+	uiState                  configstore.UIState
 
 	sheetPickerOpen   bool
 	sheetPickerPath   string
@@ -236,6 +237,10 @@ type Model struct {
 	loading   bool
 	rowModal  bool
 	rowScroll int
+
+	columnModalOpen bool
+	columnModalSel  int
+	columnModalRect modalRect
 
 	slowErr error
 
@@ -335,6 +340,7 @@ func NewModel(cs *configstore.ConfigFile, isTTY bool) *Model {
 		isTTY: isTTY,
 	}
 	if state, err := configstore.LoadUIState(); err == nil {
+		m.uiState = state
 		m.lastExportDir = state.LastExportDir
 		m.lastImportDir = state.LastImportDir
 	}
@@ -522,6 +528,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		m.mode = modeResult
 		m.table.setResult(msg.res)
+		m.applyResultLayout(&m.table)
 		m.status = fmtQueryDone(msg.res)
 		m.statusOK = true
 		m.focus = focusTable
@@ -539,6 +546,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.slowErr = nil
 		m.mode = modeSlow
 		m.slow.setResult(msg.res)
+		m.applyResultLayout(&m.slow)
 		m.status = fmtSlowDone(len(msg.res.Rows))
 		m.statusOK = true
 		m.focus = focusTable
@@ -567,6 +575,9 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	if m.helpOpen {
 		return m.handleHelpKey(key)
+	}
+	if m.columnModalOpen {
+		return m.handleColumnModalKey(key)
 	}
 	if m.confirm.kind != confirmNone {
 		return m.handleConfirmKey(key)
@@ -715,6 +726,9 @@ func (m *Model) handleMouse(msg tea.MouseMsg) (tea.Model, tea.Cmd) {
 
 	if m.helpOpen {
 		return m.handleHelpMouse(msg, isClick, isWheelUp, isWheelDown)
+	}
+	if m.columnModalOpen {
+		return m.handleColumnModalMouse(msg, isClick, isWheelUp, isWheelDown)
 	}
 	if m.confirm.kind != confirmNone {
 		return m.handleConfirmMouse(msg, isClick)

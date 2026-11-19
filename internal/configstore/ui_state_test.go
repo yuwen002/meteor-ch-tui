@@ -3,6 +3,7 @@ package configstore
 import (
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -15,13 +16,19 @@ func TestUIStateRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatalf("LoadUIState() on missing file: %v", err)
 	}
-	if got != (UIState{}) {
+	if !reflect.DeepEqual(got, UIState{}) {
 		t.Fatalf("LoadUIState() = %+v, want zero state", got)
 	}
 
 	want := UIState{
 		LastExportDir: filepath.Join(home, "exports"),
 		LastImportDir: filepath.Join(home, "imports"),
+		ResultColumnWidths: map[string]map[string]int{
+			"name\x1fvalue": {"name": 18, "value": 10},
+		},
+		ResultHiddenColumns: map[string][]string{
+			"name\x1fvalue": {"value"},
+		},
 	}
 	if err := SaveUIState(want); err != nil {
 		t.Fatalf("SaveUIState() error = %v", err)
@@ -30,7 +37,7 @@ func TestUIStateRoundTrip(t *testing.T) {
 	if err != nil {
 		t.Fatalf("LoadUIState() error = %v", err)
 	}
-	if got != want {
+	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("LoadUIState() = %+v, want %+v", got, want)
 	}
 }

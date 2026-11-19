@@ -62,6 +62,9 @@ func (m *Model) handleTableKey(key string) (tea.Model, tea.Cmd) {
 		t.topRow = 0
 		t.cursor = 0
 		return m, nil
+	case "c":
+		m.openColumnModal()
+		return m, nil
 	case "v":
 		if m.mode != modeResult || t.res == nil || len(t.res.Rows) == 0 {
 			m.status = "当前没有可查看的行"

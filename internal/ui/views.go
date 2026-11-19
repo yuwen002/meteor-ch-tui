@@ -43,6 +43,9 @@ func (m *Model) View() string {
 	if m.rowModal {
 		out = m.renderRowModal(out)
 	}
+	if m.columnModalOpen {
+		out = m.renderColumnModal(out)
+	}
 	if m.cfgModal {
 		out = m.renderCfgModal(out)
 	}

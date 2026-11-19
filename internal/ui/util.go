@@ -162,11 +162,14 @@ func runeWidth(s string) int {
 	return lipgloss.Width(s)
 }
 
+func (m *Model) persistUIState() {
+	_ = configstore.SaveUIState(m.uiState)
+}
+
 func (m *Model) persistDirs() {
-	_ = configstore.SaveUIState(configstore.UIState{
-		LastExportDir: m.lastExportDir,
-		LastImportDir: m.lastImportDir,
-	})
+	m.uiState.LastExportDir = m.lastExportDir
+	m.uiState.LastImportDir = m.lastImportDir
+	m.persistUIState()
 }
 
 func (m *Model) setLastExportDir(dir string) {
