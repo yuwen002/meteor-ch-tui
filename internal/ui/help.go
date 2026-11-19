@@ -15,8 +15,8 @@ const (
 func helpContentLines() []string {
 	return []string{
 		" 连接管理器",
-		"   ↑/↓ 选择连接 · Enter 连接 · + 新建 · e 编辑 · Del 删除 · g 分组",
-		"   Tab/Ctrl+I 导入配置 · Ctrl+E 导出配置",
+		"   ↑/↓ 选择 · Enter 连接 · + 新建 · e 编辑 · g 分组 · Del 删除",
+		"   空格 标记 · Ctrl+A 全选 · m 批量移动 · Tab/Ctrl+I 导入 · Ctrl+E 导出",
 		"",
 		" 查询界面",
 		"   Tab/Shift+Tab 切换焦点 · Ctrl+N 打开连接配置",

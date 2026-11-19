@@ -181,6 +181,15 @@ func (m *Model) handleMgrKey(msg tea.KeyMsg, key string) (tea.Model, tea.Cmd) {
 	case "e":
 		m.openEditModal()
 		return m, nil
+	case " ":
+		m.toggleConnMark()
+		return m, nil
+	case "ctrl+a":
+		m.markAllConns()
+		return m, nil
+	case "m":
+		m.openBatchMoveModal()
+		return m, nil
 	case "delete", "backspace":
 		m.requestDeleteConn()
 		return m, nil

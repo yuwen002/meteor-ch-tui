@@ -17,6 +17,9 @@ func (m *Model) View() string {
 
 	if m.appMode == appManager {
 		out := m.managerView()
+		if m.mgrBatchMoveOpen {
+			out = m.renderBatchMoveModal(out)
+		}
 		if m.confirm.kind != confirmNone {
 			out = m.renderConfirmModal(out)
 		}
@@ -190,7 +193,11 @@ func (m *Model) renderMgrList(header string) string {
 				if dbLabel == "" {
 					dbLabel = "全部"
 				}
-				full := fmt.Sprintf("  %s [%s%s] db=%s user=%s", name, addr, proto, dbLabel, c.Username)
+				mark := "  "
+				if m.mgrMarked[c.Name] {
+					mark = "[x]"
+				}
+				full := fmt.Sprintf(" %s %s [%s%s] db=%s user=%s", mark, name, addr, proto, dbLabel, c.Username)
 				if lipgloss.Width(full) > innerW {
 					full = ansi.Truncate(full, maxInt(1, innerW-3), "") + "..."
 				}
@@ -635,6 +642,9 @@ func (m *Model) renderConfirmModal(bg string) string {
 		object = "分组"
 	}
 	question := fmt.Sprintf("确定删除%s「%s」吗？", object, m.confirm.name)
+	if m.confirm.kind == confirmBatchDeleteConns {
+		question = fmt.Sprintf("确定删除选中的 %d 个连接吗？", len(m.confirm.names))
+	}
 	lines = append(lines, styleWarnText.Render(padCell(" "+question, innerW)))
 	if m.confirm.info != "" {
 		lines = append(lines, styleMuted.Render(padCell(" "+m.confirm.info, innerW)))

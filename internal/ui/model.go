@@ -65,13 +65,15 @@ const (
 	confirmNone confirmKind = iota
 	confirmDeleteConn
 	confirmDeleteGroup
+	confirmBatchDeleteConns
 )
 
 // pendingConfirm 保存待确认的删除动作，确认后才真正执行。
 type pendingConfirm struct {
-	kind confirmKind
-	name string
-	info string
+	kind  confirmKind
+	name  string
+	info  string
+	names []string
 }
 
 type contextAction int
@@ -253,6 +255,7 @@ type Model struct {
 
 	mgrGroupIdx int
 	mgrConnIdx  int
+	mgrMarked   map[string]bool
 
 	mgrAddModal    bool
 	mgrAddName     textinput.Model
@@ -279,6 +282,11 @@ type Model struct {
 	mgrGroupInput textinput.Model
 	mgrGroupSel   int
 	mgrGroupRect  modalRect
+
+	// 批量移动到分组弹窗。
+	mgrBatchMoveOpen bool
+	mgrBatchMoveSel  int
+	mgrBatchMoveRect modalRect
 
 	// 删除确认弹窗，叠加在其它弹窗之上。
 	confirm     pendingConfirm
@@ -580,6 +588,9 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	if m.columnModalOpen {
 		return m.handleColumnModalKey(key)
 	}
+	if m.mgrBatchMoveOpen {
+		return m.handleBatchMoveKey(key)
+	}
 	if m.confirm.kind != confirmNone {
 		return m.handleConfirmKey(key)
 	}
@@ -730,6 +741,9 @@ func (m *Model) handleMouse(msg tea.MouseMsg) (tea.Model, tea.Cmd) {
 	}
 	if m.columnModalOpen {
 		return m.handleColumnModalMouse(msg, isClick, isWheelUp, isWheelDown)
+	}
+	if m.mgrBatchMoveOpen {
+		return m.handleBatchMoveMouse(msg, isClick, isWheelUp, isWheelDown)
 	}
 	if m.confirm.kind != confirmNone {
 		return m.handleConfirmMouse(msg, isClick)

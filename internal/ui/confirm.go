@@ -9,6 +9,10 @@ import (
 )
 
 func (m *Model) requestDeleteConn() {
+	if m.markedCount() > 0 {
+		m.requestBatchDeleteConns()
+		return
+	}
 	conn := m.currentMgrConn()
 	if conn == nil {
 		return
@@ -58,6 +62,19 @@ func (m *Model) acceptConfirm() {
 		clampMgrSelection(m.cs, &m.mgrGroupIdx, &m.mgrConnIdx)
 	case confirmDeleteGroup:
 		m.performDeleteGroup(c.name)
+	case confirmBatchDeleteConns:
+		next := m.cs.Clone()
+		removed := next.RemoveConnections(c.names)
+		if err := next.Save(); err != nil {
+			m.status = "删除失败: " + err.Error()
+			m.statusOK = false
+			return
+		}
+		*m.cs = *next
+		m.clearConnMarks()
+		clampMgrSelection(m.cs, &m.mgrGroupIdx, &m.mgrConnIdx)
+		m.status = fmt.Sprintf("已删除 %d 个连接", removed)
+		m.statusOK = true
 	}
 }
 

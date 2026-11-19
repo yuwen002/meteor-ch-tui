@@ -119,6 +119,48 @@ func (c *ConfigFile) Remove(name string) bool {
 	return false
 }
 
+// MoveConnectionsToGroup 把指定连接移动到目标分组，返回实际移动数量。
+func (c *ConfigFile) MoveConnectionsToGroup(names []string, group string) int {
+	set := map[string]bool{}
+	for _, name := range names {
+		set[name] = true
+	}
+	group = strings.TrimSpace(group)
+	if group == DefaultGroupName {
+		group = ""
+	}
+	moved := 0
+	for i := range c.Connections {
+		if set[c.Connections[i].Name] && c.Connections[i].Group != group {
+			c.Connections[i].Group = group
+			moved++
+		}
+	}
+	return moved
+}
+
+// RemoveConnections 批量删除连接，返回实际删除数量。
+func (c *ConfigFile) RemoveConnections(names []string) int {
+	set := map[string]bool{}
+	for _, name := range names {
+		set[name] = true
+	}
+	kept := c.Connections[:0]
+	removed := 0
+	for _, conn := range c.Connections {
+		if set[conn.Name] {
+			removed++
+			if conn.Name == c.LastUsed {
+				c.LastUsed = ""
+			}
+			continue
+		}
+		kept = append(kept, conn)
+	}
+	c.Connections = kept
+	return removed
+}
+
 func (c *ConfigFile) Update(conn SavedConnection) bool {
 	for i, existing := range c.Connections {
 		if existing.Name == conn.Name {
