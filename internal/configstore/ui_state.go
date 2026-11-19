@@ -10,8 +10,9 @@ import (
 
 // UIState 保存与连接配置无关的界面偏好。
 type UIState struct {
-	LastExportDir string `json:"last_export_dir,omitempty"`
-	LastImportDir string `json:"last_import_dir,omitempty"`
+	LastExportDir       string `json:"last_export_dir,omitempty"`
+	LastImportDir       string `json:"last_import_dir,omitempty"`
+	FileBrowserSortMode int    `json:"file_browser_sort_mode,omitempty"`
 
 	// ResultColumnWidths / ResultHiddenColumns 以结果列签名（列名的固定顺序拼接）为 key。
 	ResultColumnWidths  map[string]map[string]int `json:"result_column_widths,omitempty"`

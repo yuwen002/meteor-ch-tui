@@ -75,7 +75,19 @@ func TestFileBrowserSortToggle(t *testing.T) {
 	}
 }
 
+func TestFileBrowserSortModePersists(t *testing.T) {
+	isolateTestHome(t)
+	m := newImportTestModel(t)
+	m.setFileBrowserSortMode(1)
+
+	next := newImportTestModel(t)
+	if next.fileBrowserSortMode != 1 {
+		t.Fatalf("sort mode = %d, want 1", next.fileBrowserSortMode)
+	}
+}
+
 func TestFileBrowserFilterAndSortHotspots(t *testing.T) {
+	isolateTestHome(t)
 	m := newImportTestModel(t)
 	m.lastImportDir = t.TempDir()
 	m.openFileBrowser()

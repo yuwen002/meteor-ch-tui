@@ -21,8 +21,9 @@ func TestUIStateRoundTrip(t *testing.T) {
 	}
 
 	want := UIState{
-		LastExportDir: filepath.Join(home, "exports"),
-		LastImportDir: filepath.Join(home, "imports"),
+		LastExportDir:       filepath.Join(home, "exports"),
+		LastImportDir:       filepath.Join(home, "imports"),
+		FileBrowserSortMode: 1,
 		ResultColumnWidths: map[string]map[string]int{
 			"name\x1fvalue": {"name": 18, "value": 10},
 		},

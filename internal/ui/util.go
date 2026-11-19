@@ -188,6 +188,15 @@ func (m *Model) setLastImportDir(dir string) {
 	m.persistDirs()
 }
 
+func (m *Model) setFileBrowserSortMode(mode int) {
+	if m.fileBrowserSortMode == mode {
+		return
+	}
+	m.fileBrowserSortMode = mode
+	m.uiState.FileBrowserSortMode = mode
+	m.persistUIState()
+}
+
 func (m *Model) isDoubleClick(x, y int) bool {
 	now := time.Now().UnixMilli()
 	if m.lastClickX == x && m.lastClickY == y && now-m.lastClickTime < 700 {

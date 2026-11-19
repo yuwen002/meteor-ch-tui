@@ -343,6 +343,7 @@ func NewModel(cs *configstore.ConfigFile, isTTY bool) *Model {
 		m.uiState = state
 		m.lastExportDir = state.LastExportDir
 		m.lastImportDir = state.LastImportDir
+		m.fileBrowserSortMode = state.FileBrowserSortMode
 	}
 
 	if len(cs.Connections) == 0 {

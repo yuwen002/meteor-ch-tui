@@ -63,7 +63,7 @@ func (m *Model) blurFileBrowserFilter() {
 }
 
 func (m *Model) toggleFileBrowserSort() {
-	m.fileBrowserSortMode = (m.fileBrowserSortMode + 1) % 2
+	m.setFileBrowserSortMode((m.fileBrowserSortMode + 1) % 2)
 	m.fileBrowserSel = 0
 	m.loadFileBrowser()
 }
