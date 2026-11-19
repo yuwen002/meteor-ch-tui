@@ -1,6 +1,7 @@
 package configstore
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -31,5 +32,18 @@ func TestUIStateRoundTrip(t *testing.T) {
 	}
 	if got != want {
 		t.Fatalf("LoadUIState() = %+v, want %+v", got, want)
+	}
+}
+
+func TestSaveUIStateWriteFailure(t *testing.T) {
+	blocker := filepath.Join(t.TempDir(), "blocker")
+	if err := os.WriteFile(blocker, []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("HOME", blocker)
+	t.Setenv("USERPROFILE", blocker)
+
+	if err := SaveUIState(UIState{LastExportDir: "x"}); err == nil {
+		t.Fatal("SaveUIState() should fail when the home path is a file")
 	}
 }

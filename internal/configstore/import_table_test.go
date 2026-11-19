@@ -1,6 +1,7 @@
 package configstore
 
 import (
+	"os"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -183,5 +184,22 @@ func TestImportXLSX(t *testing.T) {
 	}
 	if _, err := ImportXLSX(empty); err == nil {
 		t.Fatal("ImportXLSX() accepted an empty workbook")
+	}
+}
+
+func TestImportXLSXBrokenFile(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "broken.xlsx")
+	if err := os.WriteFile(path, []byte("not xlsx"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := XLSXSheets(path); err == nil {
+		t.Fatal("XLSXSheets() accepted a broken workbook")
+	}
+	if _, err := ImportXLSX(path); err == nil {
+		t.Fatal("ImportXLSX() accepted a broken workbook")
+	}
+	if _, err := ImportXLSXSheet(path, "Sheet1"); err == nil {
+		t.Fatal("ImportXLSXSheet() accepted a broken workbook")
 	}
 }
