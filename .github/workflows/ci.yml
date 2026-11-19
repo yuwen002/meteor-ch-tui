@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Check gofmt
+        run: |
+          unformatted="$(gofmt -l .)"
+          if [ -n "$unformatted" ]; then
+            echo "Unformatted files:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Tidy check
+        run: go mod tidy -diff
+
+      - name: Test
+        run: go test ./... -count=1
+
+      - name: Cross-platform build
+        shell: pwsh
+        run: ./build.ps1 -All
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: meteor-ch-tui-${{ github.sha }}
+          path: dist/*
+          if-no-files-found: error

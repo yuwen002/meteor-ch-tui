@@ -15,6 +15,11 @@
 - 完成导出取消与进度提示可行性评估，结论是当前暂缓实现。
 - 在 `PLAN.md` 中新增发布前检查清单，覆盖版本、产物、测试、文档、配置路径、Git 状态与人工验收。
 
+### 工程
+
+- 新增 `.github/workflows/ci.yml`，在 push 和 pull request 到 `main` 时执行统一验收命令。
+- CI 覆盖 gofmt、build、vet、tidy diff、test、四平台构建，并上传 `dist/` 构建产物。
+
 ## `86fa164` - 2026-11-19
 
 ### 文档
