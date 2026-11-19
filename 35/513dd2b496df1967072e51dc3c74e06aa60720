@@ -1,0 +1,24 @@
+CHANGELOG.md
+  s_bf4ceae60be48c::t_7d62f89462a62c 1-66
+PLAN.md
+  s_bf4ceae60be48c::t_013fdef9361f52 52-56
+  s_bf4ceae60be48c::t_56e7abe0341b6a 118,124-131
+  s_bf4ceae60be48c::t_86c1056f4e4242 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "35513dd2b496df1967072e51dc3c74e06aa60720",
+  "prompts": {},
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 81
+    }
+  }
+}
