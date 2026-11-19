@@ -1,0 +1,45 @@
+internal/ui/file_browser.go
+  s_bf4ceae60be48c::t_1470e1e49eb22a 66
+internal/configstore/ui_state.go
+  s_bf4ceae60be48c::t_b13f01684976ec 13-15
+internal/ui/util.go
+  s_bf4ceae60be48c::t_03ee543339bf44 191-199
+internal/configstore/ui_state_test.go
+  s_bf4ceae60be48c::t_dc1b60756d8ad9 24-26
+internal/ui/file_browser_filter_test.go
+  s_bf4ceae60be48c::t_b20fb1e5500b57 78-88
+  h_a3f313f3d96276 90
+PLAN.md
+  s_bf4ceae60be48c::t_f52a7d43dfa3e9 93-95
+  s_bf4ceae60be48c::t_d541cc14f891a6 188-189
+  s_bf4ceae60be48c::t_7a39f0a614c8ea 87-92
+  s_bf4ceae60be48c::t_7f827c1cc4a2c8 176
+CHANGELOG.md
+  s_bf4ceae60be48c::t_9397a9438a6fdd 19-20
+  s_bf4ceae60be48c::t_18e808226f4309 26
+  s_bf4ceae60be48c::t_fe3d26d57bbe98 12
+internal/ui/model.go
+  s_bf4ceae60be48c::t_76da87726a89a0 346
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "7ada3f360bfc4a02af87d2377aa26e69eed68174",
+  "prompts": {},
+  "humans": {
+    "h_a3f313f3d96276": {
+      "author": "liuxingyu <yuwen002@163.com>"
+    }
+  },
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 44
+    }
+  }
+}
