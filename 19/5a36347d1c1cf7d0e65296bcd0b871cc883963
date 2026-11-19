@@ -1,0 +1,63 @@
+internal/ui/query.go
+  s_bf4ceae60be48c::t_978286a8715850 65-67
+internal/ui/column_layout_test.go
+  s_bf4ceae60be48c::t_74d4120228fecf 103
+  s_bf4ceae60be48c::t_1da285622bbcb9 1-4,6-56,66-102,104-106
+  s_bf4ceae60be48c::t_5386feb3fd37a1 5
+  s_bf4ceae60be48c::t_d0de71f3e0537f 57-65
+internal/ui/column_modal.go
+  s_bf4ceae60be48c::t_f85bc6440dbfbc 1-205
+internal/ui/column_layout.go
+  s_bf4ceae60be48c::t_b85338b013c6d7 1-32
+README.md
+  s_bf4ceae60be48c::t_3db60a530bf3c9 8
+  s_bf4ceae60be48c::t_204d892eeb1f32 86
+PLAN.md
+  s_bf4ceae60be48c::t_e9c14b57f2cd62 169
+  s_bf4ceae60be48c::t_36855e590c4a97 179
+  s_bf4ceae60be48c::t_7aa119ae39ae64 80,82-86
+internal/configstore/ui_state.go
+  s_bf4ceae60be48c::t_f85bc6440dbfbc 17
+  s_bf4ceae60be48c::t_40394ab4ecf49b 15-16,18
+internal/ui/views.go
+  s_bf4ceae60be48c::t_281b160c5bba93 46-48
+internal/ui/model.go
+  s_bf4ceae60be48c::t_23ed889569b1e1 531
+  s_bf4ceae60be48c::t_386d2192149533 730-732
+  s_bf4ceae60be48c::t_4e38863f04bdee 343
+  s_bf4ceae60be48c::t_6b9edf603f86c7 241-244
+  s_bf4ceae60be48c::t_3ff1cbc216b8ec 222
+  s_bf4ceae60be48c::t_9b06a27b4fbd4a 579-581
+  s_bf4ceae60be48c::t_f41b53aa01d93a 549
+internal/configstore/ui_state_test.go
+  s_bf4ceae60be48c::t_1330aa95d86724 19
+  s_bf4ceae60be48c::t_72238d1f715c6c 40
+  s_bf4ceae60be48c::t_dcef990f04be12 6
+  s_bf4ceae60be48c::t_5d156793d7e9f9 26-31
+internal/ui/table.go
+  s_bf4ceae60be48c::t_9d829415733962 177-181,199,205,207,212,214
+  s_bf4ceae60be48c::t_d7adb7ab92e14a 22-23,32-33,39-144
+CHANGELOG.md
+  s_bf4ceae60be48c::t_541e1152c94880 7-12
+internal/ui/util.go
+  s_bf4ceae60be48c::t_6e4877c3e6db49 165-168,170-172
+internal/ui/help.go
+  s_bf4ceae60be48c::t_de15db90ff177d 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "195a36347d1c1cf7d0e65296bcd0b871cc883963",
+  "prompts": {},
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 540
+    }
+  }
+}
