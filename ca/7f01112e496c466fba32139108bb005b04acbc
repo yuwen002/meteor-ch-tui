@@ -1,0 +1,27 @@
+CHANGELOG.md
+  s_bf4ceae60be48c::t_a13462e80ec0b4 18-22
+.github/workflows/ci.yml
+  s_bf4ceae60be48c::t_b283f6be2b1120 1-57
+PLAN.md
+  s_bf4ceae60be48c::t_c54cc16d57c0e7 74-78
+  s_bf4ceae60be48c::t_1f31ea6b3628b0 175
+  s_bf4ceae60be48c::t_4baa0101dd4ce3 165
+  s_bf4ceae60be48c::t_b0e50e720b9187 59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "ca7f01112e496c466fba32139108bb005b04acbc",
+  "prompts": {},
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 70
+    }
+  }
+}
