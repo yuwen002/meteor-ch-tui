@@ -92,16 +92,21 @@ func Load() (*ConfigFile, error) {
 
 func (c *ConfigFile) Save() error {
 	dir := DefaultDir()
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0700); err != nil {
 		return fmt.Errorf("创建目录失败: %w", err)
 	}
+	// 已存在的目录/文件不会因 MkdirAll/WriteFile 改变权限，显式收紧以免升级后仍是旧权限。
+	// Windows 上 chmod 仅影响只读属性，忽略其错误，避免影响主流程。
+	_ = os.Chmod(dir, 0700)
 	data, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
 		return fmt.Errorf("序列化失败: %w", err)
 	}
-	if err := os.WriteFile(DefaultPath(), data, 0644); err != nil {
+	path := DefaultPath()
+	if err := os.WriteFile(path, data, 0600); err != nil {
 		return fmt.Errorf("写入配置失败: %w", err)
 	}
+	_ = os.Chmod(path, 0600)
 	return nil
 }
 

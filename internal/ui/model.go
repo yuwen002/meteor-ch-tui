@@ -66,6 +66,7 @@ const (
 	confirmDeleteConn
 	confirmDeleteGroup
 	confirmBatchDeleteConns
+	confirmExportPasswords
 )
 
 // pendingConfirm 保存待确认的删除动作，确认后才真正执行。

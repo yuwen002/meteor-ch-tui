@@ -631,19 +631,30 @@ func (m *Model) renderConfirmModal(bg string) string {
 	}
 	innerW := boxW - 2
 
-	title := styleErrText.Render(" 确认删除 ")
-	hint := styleMuted.Render(" 此操作不可撤销 ")
+	titleText := " 确认删除 "
+	hintText := " 此操作不可撤销 "
+	if m.confirm.kind == confirmExportPasswords {
+		titleText = " 安全提醒 "
+		hintText = " 请确认导出用途 "
+	}
+	title := styleErrText.Render(titleText)
+	hint := styleMuted.Render(hintText)
 	lines := make([]string, 0, 8)
 	lines = append(lines, padCell(title, maxInt(0, innerW-lipgloss.Width(hint)))+hint)
 	lines = append(lines, "")
 
-	object := "连接"
-	if m.confirm.kind == confirmDeleteGroup {
-		object = "分组"
-	}
-	question := fmt.Sprintf("确定删除%s「%s」吗？", object, m.confirm.name)
-	if m.confirm.kind == confirmBatchDeleteConns {
-		question = fmt.Sprintf("确定删除选中的 %d 个连接吗？", len(m.confirm.names))
+	question := ""
+	if m.confirm.kind == confirmExportPasswords {
+		question = "确定导出包含明文密码的连接配置吗？"
+	} else {
+		object := "连接"
+		if m.confirm.kind == confirmDeleteGroup {
+			object = "分组"
+		}
+		question = fmt.Sprintf("确定删除%s「%s」吗？", object, m.confirm.name)
+		if m.confirm.kind == confirmBatchDeleteConns {
+			question = fmt.Sprintf("确定删除选中的 %d 个连接吗？", len(m.confirm.names))
+		}
 	}
 	lines = append(lines, styleWarnText.Render(padCell(" "+question, innerW)))
 	if m.confirm.info != "" {

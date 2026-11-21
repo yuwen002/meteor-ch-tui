@@ -528,8 +528,12 @@ func (m *Model) commitMgrImport() (tea.Model, tea.Cmd) {
 
 func (m *Model) toggleMgrImportOption() {
 	if m.mgrExportMode {
-		m.mgrExportPasswords = !m.mgrExportPasswords
-		m.refreshMgrExportPreview()
+		if m.mgrExportPasswords {
+			m.mgrExportPasswords = false
+			m.refreshMgrExportPreview()
+			return
+		}
+		m.requestExportPasswords()
 		return
 	}
 	m.mgrImportOverwrite = !m.mgrImportOverwrite

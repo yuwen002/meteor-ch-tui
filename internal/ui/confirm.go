@@ -38,6 +38,13 @@ func (m *Model) requestDeleteGroup() {
 	}
 }
 
+func (m *Model) requestExportPasswords() {
+	m.confirm = pendingConfirm{
+		kind: confirmExportPasswords,
+		info: "明文密码会写入导出文件，请妥善保管导出结果",
+	}
+}
+
 func (m *Model) cancelConfirm() {
 	m.confirm = pendingConfirm{}
 }
@@ -75,6 +82,9 @@ func (m *Model) acceptConfirm() {
 		clampMgrSelection(m.cs, &m.mgrGroupIdx, &m.mgrConnIdx)
 		m.status = fmt.Sprintf("已删除 %d 个连接", removed)
 		m.statusOK = true
+	case confirmExportPasswords:
+		m.mgrExportPasswords = true
+		m.refreshMgrExportPreview()
 	}
 }
 
