@@ -1,0 +1,45 @@
+go.mod
+  s_bf4ceae60be48c::t_ddad41ec1c275d 15
+  s_bf4ceae60be48c::t_291d04e1f99e34 29,33
+internal/configstore/credentials_test.go
+  s_bf4ceae60be48c::t_227f3bc16d05ed 200-218
+  s_bf4ceae60be48c::t_68705963a1a599 104-107
+  s_bf4ceae60be48c::t_632e970a6b10e5 1-103,108-123,127-199,219-246
+  s_bf4ceae60be48c::t_ff99d3a0fa56e7 124-126
+internal/configstore/store.go
+  s_bf4ceae60be48c::t_82c67eabcafcd9 120-122,157-160,165-167,171-172,175-177,179
+  s_bf4ceae60be48c::t_30181242266189 32-35
+  s_bf4ceae60be48c::t_1735d449b53952 96-100,103-105
+  s_bf4ceae60be48c::t_2e777770894a51 94-95,101-102,106-107,119,123-137,151-156,161,168-170,173-174,178,180-181
+  s_bf4ceae60be48c::t_128a1ae941c5af 138-142,145
+PLAN.md
+  s_bf4ceae60be48c::t_d08bec665d0502 10
+  s_bf4ceae60be48c::t_00a625f60abec6 211-212
+  s_bf4ceae60be48c::t_2b0dba2677f352 119-126
+  s_bf4ceae60be48c::t_87ae4ab079c1b7 229
+  s_bf4ceae60be48c::t_d2c6e9bd201deb 205
+CHANGELOG.md
+  s_bf4ceae60be48c::t_727856e819e405 18-20
+  s_bf4ceae60be48c::t_00e30a0bd841fb 31
+internal/configstore/credentials.go
+  s_bf4ceae60be48c::t_defff052d12ecd 1-46
+README.md
+  s_bf4ceae60be48c::t_6ae368e2d144f1 127-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "cf59789c22a24a7413619e5765a1366cbc744520",
+  "prompts": {},
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 458
+    }
+  }
+}
