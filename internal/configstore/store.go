@@ -29,6 +29,10 @@ const DefaultGroupName = "(默认)"
 // RedactedPassword 表示导出时已脱敏的密码；覆盖导入时会保留现有密码。
 const RedactedPassword = "<redacted>"
 
+// KeyringPassword 表示密码已外置到系统密钥环，config.json 中仅保留此占位符。
+// 内存中仍保存明文供连接与导出使用。
+const KeyringPassword = "<stored-in-keyring>"
+
 type ConfigFile struct {
 	Connections []SavedConnection `json:"connections"`
 	LastUsed    string            `json:"last_used"`
@@ -87,6 +91,20 @@ func Load() (*ConfigFile, error) {
 	if cfg.Connections == nil {
 		cfg.Connections = []SavedConnection{}
 	}
+	for i := range cfg.Connections {
+		pw := cfg.Connections[i].Password
+		name := cfg.Connections[i].Name
+		switch {
+		case pw == KeyringPassword:
+			// 密码已外置：从系统密钥环读回明文填入内存。读取失败时保留占位符。
+			if secret, err := activeBackend.Load(name); err == nil {
+				cfg.Connections[i].Password = secret
+			}
+		case pw != "" && pw != RedactedPassword:
+			// 旧格式明文密码：惰性迁移到密钥环。内存保留明文，下次 Save 会写入占位符。
+			_ = activeBackend.Store(name, pw)
+		}
+	}
 	return &cfg, nil
 }
 
@@ -98,16 +116,67 @@ func (c *ConfigFile) Save() error {
 	// 已存在的目录/文件不会因 MkdirAll/WriteFile 改变权限，显式收紧以免升级后仍是旧权限。
 	// Windows 上 chmod 仅影响只读属性，忽略其错误，避免影响主流程。
 	_ = os.Chmod(dir, 0700)
-	data, err := json.MarshalIndent(c, "", "  ")
-	if err != nil {
+
+	// 写盘前读取旧配置，用于写成功后对账清理已删除连接的密钥环条目。
+	previous := persistedConnectionNames(DefaultPath())
+
+	// 序列化用影子副本：真实密码写入系统密钥环，config.json 仅保留占位符。
+	// 密钥环写入失败时保留明文（降级），避免凭据丢失。
+	out := *c
+	out.Connections = make([]SavedConnection, len(c.Connections))
+	copy(out.Connections, c.Connections)
+	for i := range out.Connections {
+		pw := out.Connections[i].Password
+		if pw == "" || pw == KeyringPassword || pw == RedactedPassword {
+			continue
+		}
+		if err := activeBackend.Store(out.Connections[i].Name, pw); err == nil {
+			out.Connections[i].Password = KeyringPassword
+		}
+	}
+
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+	enc.SetIndent("", "  ")
+	if err := enc.Encode(&out); err != nil {
 		return fmt.Errorf("序列化失败: %w", err)
 	}
+	data := buf.Bytes()
 	path := DefaultPath()
 	if err := os.WriteFile(path, data, 0600); err != nil {
 		return fmt.Errorf("写入配置失败: %w", err)
 	}
 	_ = os.Chmod(path, 0600)
+
+	// 写盘成功后再清理，避免写失败导致凭据与配置不一致。
+	live := make(map[string]bool, len(out.Connections))
+	for _, conn := range out.Connections {
+		live[conn.Name] = true
+	}
+	for _, name := range previous {
+		if !live[name] {
+			_ = activeBackend.Remove(name)
+		}
+	}
 	return nil
+}
+
+// persistedConnectionNames 读取当前落盘配置中的连接名；读取或解析失败时返回空。
+func persistedConnectionNames(path string) []string {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil
+	}
+	var old ConfigFile
+	if err := json.Unmarshal(data, &old); err != nil {
+		return nil
+	}
+	names := make([]string, 0, len(old.Connections))
+	for _, conn := range old.Connections {
+		names = append(names, conn.Name)
+	}
+	return names
 }
 
 func (c *ConfigFile) Add(conn SavedConnection) {

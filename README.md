@@ -124,6 +124,8 @@ Windows 本地构建：
 
 连接配置文件以仅当前用户可读写的权限保存（目录 `0700`、文件 `0600`，Windows 下以系统 ACL 为准）。
 
+连接密码存储在系统密钥环中，不写入 `config.json`（文件里仅保留 `<stored-in-keyring>` 占位符）：Windows 使用凭据管理器，macOS 使用钥匙串，Linux 使用 Secret Service。旧版配置中的明文密码会在首次加载时自动迁移到密钥环。若系统密钥环不可用（如无头 Linux 环境），会降级为在 `config.json` 中保存明文以保证功能可用。
+
 ## 关于我们
 
 作者：浮笙  
