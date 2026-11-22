@@ -55,6 +55,14 @@ Windows 本地构建：
 ./build.ps1 -All
 ```
 
+完整测试（竞态检测 + 覆盖率，需 Go 1.26 与 gcc/cgo）：
+
+```powershell
+./test-full.ps1
+```
+
+脚本会在进程内定位 Go 1.26 工具链与 gcc，临时设置 `GOROOT` / `GOTOOLCHAIN=local` / `CGO_ENABLED=1`，运行 `go test -race` 与 `go test -cover`，不修改系统环境变量。日常验收用统一命令 `gofmt -l .` / `go build ./...` / `go vet ./...` / `go mod tidy -diff` / `go test ./... -count=1` 即可。
+
 ## 快捷键
 
 ### 连接管理器

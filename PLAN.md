@@ -22,6 +22,14 @@ go test ./... -count=1
 ./build.ps1
 ```
 
+完整测试（竞态检测 + 覆盖率，需 Go 1.26 与 gcc/cgo）：
+
+```powershell
+./test-full.ps1
+```
+
+`test-full.ps1` 会在进程内定位 Go 1.26 工具链与 gcc，设置 `GOROOT` / `GOTOOLCHAIN=local` / `CGO_ENABLED=1` 后运行 `go test -race` 与 `go test -cover`，不改系统环境变量。
+
 ## 阶段一：功能补齐与交互体验（已完成）
 
 - [x] 查询结果导出 TSV / CSV / JSON / XLSX
@@ -206,6 +214,7 @@ go test ./... -count=1
 | 2026-11-22 | `cf59789` | 实现系统密钥环存储连接密码 |
 | 2026-11-22 | `ab6c83a` | 对齐计划与变更日志中的阶段状态和密码存储结论 |
 | 2026-11-22 | `86a7ece` | 新增 ACCEPTANCE_CHECKLIST.md 人工验收清单 |
+| 2026-11-22 | 待提交 | 新增 test-full.ps1 完整测试脚本（race + cover） |
 
 ## 下一步
 

@@ -42,6 +42,7 @@
 
 - 新增 `.github/workflows/ci.yml`，在 push 和 pull request 到 `main` 时执行统一验收命令。
 - CI 覆盖 gofmt、build、vet、tidy diff、test、四平台构建，并上传 `dist/` 构建产物。
+- 新增 `test-full.ps1`，在进程内定位 Go 1.26 工具链与 gcc 后运行 `go test -race` 与 `go test -cover`，解决本机系统 Go 版本偏低、gcc 由 winget 用户级安装导致的环境不一致问题。
 
 ## `86fa164` - 2026-11-19
 
