@@ -1,0 +1,28 @@
+test-full.ps1
+  s_bf4ceae60be48c::t_5530e825b8ad34 4-29,31-35,38-43,45-63,66,68,71,73
+  s_bf4ceae60be48c::t_2e756225e5f082 1-3,30,36-37,44,64-65,67,69-70,72,74-75
+CHANGELOG.md
+  s_bf4ceae60be48c::t_0f1698a8eebeb3 45
+PLAN.md
+  s_bf4ceae60be48c::t_d4192f3962cb03 25-32
+  s_bf4ceae60be48c::t_c2143ec8288de4 217
+README.md
+  s_bf4ceae60be48c::t_0aca3d26bf4ebb 58-65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "a71c8e24d80d2d4b9bd508fa3c3a9664871a5839",
+  "prompts": {},
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 107
+    }
+  }
+}
