@@ -280,6 +280,44 @@ var mgrAddFieldsInfo = []struct {
 	{"Database", func(m *Model) *textinput.Model { return &m.mgrAddDB }},
 }
 
+// mgrAddGroupValues 返回新建/编辑弹窗中可快捷填入的分组值（默认组用空字符串表示）。
+func (m *Model) mgrAddGroupValues() []string {
+	groups := m.cs.Groups()
+	vals := make([]string, 0, len(groups))
+	for _, g := range groups {
+		if g == configstore.DefaultGroupName {
+			vals = append(vals, "")
+		} else {
+			vals = append(vals, g)
+		}
+	}
+	return vals
+}
+
+// cycleMgrAddGroup 在已有分组中按方向循环，填入分组输入框。
+func (m *Model) cycleMgrAddGroup(next bool) {
+	vals := m.mgrAddGroupValues()
+	if len(vals) == 0 {
+		return
+	}
+	cur := strings.TrimSpace(m.mgrAddGroup.Value())
+	idx := -1
+	for i, v := range vals {
+		if v == cur {
+			idx = i
+			break
+		}
+	}
+	if next {
+		idx++
+	} else {
+		idx--
+	}
+	idx = (idx + len(vals)) % len(vals)
+	m.mgrAddGroup.SetValue(vals[idx])
+	m.mgrAddGroup.CursorEnd()
+}
+
 func (m *Model) handleMgrAddKey(msg tea.KeyMsg, key string) (tea.Model, tea.Cmd) {
 	switch key {
 	case "esc":
@@ -301,6 +339,10 @@ func (m *Model) handleMgrAddKey(msg tea.KeyMsg, key string) (tea.Model, tea.Cmd)
 	case "left", "right", " ":
 		if mgrAddFieldsInfo[m.mgrAddFieldIdx].name == "协议" {
 			m.toggleMgrAddProtocol()
+			return m, nil
+		}
+		if mgrAddFieldsInfo[m.mgrAddFieldIdx].name == "分组" && (key == "left" || key == "right") {
+			m.cycleMgrAddGroup(key == "right")
 			return m, nil
 		}
 	}
@@ -775,6 +817,18 @@ func (m *Model) handleMgrAddModalMouse(msg tea.MouseMsg, isClick bool) (tea.Mode
 			m.closeMgrAddModal()
 		}
 		return m, nil
+	}
+
+	// 已有分组快捷项：点击后填入分组输入框。
+	if relY == r.groupRow {
+		for i, x := range r.groupXs {
+			if i < len(r.groupWs) && i < len(r.groupVals) &&
+				relX >= x && relX < x+r.groupWs[i] {
+				m.mgrAddGroup.SetValue(r.groupVals[i])
+				m.mgrAddGroup.CursorEnd()
+				return m, nil
+			}
+		}
 	}
 
 	fieldIdx := relY - r.fieldStart

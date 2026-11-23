@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/yuwen002/meteor-ch-tui/internal/ch"
+	"github.com/yuwen002/meteor-ch-tui/internal/configstore"
 )
 
 func (m *Model) View() string {
@@ -286,6 +287,36 @@ func (m *Model) renderMgrAddModal(bg string) string {
 		lines = append(lines, label+fieldView)
 	}
 
+	// 已有分组快捷项：显示当前分组数量，点击或方向键可填入，避免手动输入打错字。
+	groupRow := -1
+	var groupXs, groupWs []int
+	var groupVals []string
+	groups := m.cs.Groups()
+	if len(groups) > 0 {
+		label := styleMuted.Render(" 已有分组")
+		lines = append(lines, label+styleMuted.Render(fmt.Sprintf(" (%d)", len(groups))))
+		groupRow = len(lines) + 1 // 内容行 + 边框偏移 1，供鼠标 relY 命中
+		var segs []string
+		pos := 2 // 按钮组相对内容行起始列（行首 2 空格）
+		for _, g := range groups {
+			val := g
+			if g == configstore.DefaultGroupName {
+				val = ""
+			}
+			btn := styleBtnMuted.Render(" " + g + " ")
+			bw := lipgloss.Width(btn)
+			if pos+bw > innerW {
+				break
+			}
+			segs = append(segs, btn)
+			groupXs = append(groupXs, pos)
+			groupWs = append(groupWs, bw)
+			groupVals = append(groupVals, val)
+			pos += bw + 1
+		}
+		lines = append(lines, "  "+strings.Join(segs, " "))
+	}
+
 	lines = append(lines, "")
 	result := ""
 	if m.mgrTesting {
@@ -317,6 +348,10 @@ func (m *Model) renderMgrAddModal(bg string) string {
 	rect.fieldStart = 3
 	rect.fieldCount = len(mgrAddFieldsInfo)
 	rect.protocolRow = protoContentRow + 1
+	rect.groupRow = groupRow
+	rect.groupXs = groupXs
+	rect.groupWs = groupWs
+	rect.groupVals = groupVals
 	applyFooter(&rect, footerContentRow, addBtns, footerPositions)
 	m.addModalRect = rect
 	return out
