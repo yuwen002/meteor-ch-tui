@@ -1,0 +1,20 @@
+PLAN.md
+  s_bf4ceae60be48c::t_8095d5a8bcedd1 218
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "0dc9bd35b7bac0f89f88fb6d2679fbc47d568a5f",
+  "prompts": {},
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 1
+    }
+  }
+}
