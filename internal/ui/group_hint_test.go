@@ -85,6 +85,29 @@ func TestAddModalGroupCycleByKeyboard(t *testing.T) {
 	}
 }
 
+func TestAddModalGroupHintHighlightsCurrent(t *testing.T) {
+	m := newGroupHintModel(t)
+	m.openAddModal()
+	vals := m.mgrAddGroupValues()
+	// 选中第一个分组，当前项应以高亮按钮样式渲染。
+	m.mgrAddGroup.SetValue(vals[0])
+
+	view := m.View()
+	plain := ansi.Strip(view)
+	if !strings.Contains(plain, "已有分组") {
+		t.Fatalf("group hint missing:\n%s", plain)
+	}
+	// 高亮样式带背景色，原始 View 中该分组文本出现次数应多于纯文本一次
+	// （styleBtnOK 与 styleBtnMuted 的差异通过 ANSI 转义体现）。
+	selectedGroup := m.cs.Groups()[0]
+	if !strings.Contains(plain, selectedGroup) {
+		t.Fatalf("selected group %q not rendered:\n%s", selectedGroup, plain)
+	}
+	if strings.Contains(view, styleBtnOK.Render(" "+selectedGroup+" ")) == false {
+		t.Fatalf("selected group not highlighted with styleBtnOK:\n%s", view)
+	}
+}
+
 func TestAddModalGroupHintIncludesDefault(t *testing.T) {
 	cs := &configstore.ConfigFile{
 		Connections: []configstore.SavedConnection{{Name: "x", Host: "x.local", Group: ""}},

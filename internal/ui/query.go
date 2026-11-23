@@ -12,7 +12,7 @@ func quoteIdent(s string) string {
 
 func (m *Model) handleEditorKey(msg tea.KeyMsg, key string) (tea.Model, tea.Cmd) {
 	switch key {
-	case "alt+enter", "ctrl+s", "f5":
+	case "ctrl+s", "f5":
 		sql := strings.TrimSpace(m.editor.Value())
 		if sql == "" {
 			m.status = "SQL 为空"

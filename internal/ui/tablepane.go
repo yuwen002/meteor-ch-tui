@@ -20,7 +20,7 @@ func (m *Model) tableView() string {
 	}
 	t := m.activeTable()
 	if t.res == nil {
-		msg := styleMuted.Render("尚无结果，输入 SQL 后按 Alt+Enter 执行")
+		msg := styleMuted.Render("尚无结果，输入 SQL 后按 Ctrl+S 或 F5 执行")
 		if m.mode == modeSlow && m.slowErr != nil {
 			msg = styleErrText.Render("读取失败: " + m.slowErr.Error())
 		}

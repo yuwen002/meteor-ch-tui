@@ -407,7 +407,7 @@ func NewModelQuickConnect(cfg ch.Config, cs *configstore.ConfigFile, isTTY bool)
 
 func (m *Model) initMainMode() {
 	ta := textarea.New()
-	ta.Placeholder = "SELECT ... FROM ... (Alt+Enter 执行)"
+	ta.Placeholder = "SELECT ... FROM ... (Ctrl+S / F5 执行)"
 	ta.Prompt = "SQL> "
 	ta.CharLimit = 0
 	ta.ShowLineNumbers = false

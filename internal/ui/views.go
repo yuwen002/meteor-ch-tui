@@ -298,17 +298,23 @@ func (m *Model) renderMgrAddModal(bg string) string {
 		groupRow = len(lines) + 1 // 内容行 + 边框偏移 1，供鼠标 relY 命中
 		var segs []string
 		pos := 2 // 按钮组相对内容行起始列（行首 2 空格）
+		current := strings.TrimSpace(m.mgrAddGroup.Value())
 		for _, g := range groups {
 			val := g
 			if g == configstore.DefaultGroupName {
 				val = ""
 			}
-			btn := styleBtnMuted.Render(" " + g + " ")
+			label := " " + g + " "
+			if val == current {
+				segs = append(segs, styleBtnOK.Render(label))
+			} else {
+				segs = append(segs, styleBtnMuted.Render(label))
+			}
+			btn := styleBtnMuted.Render(label)
 			bw := lipgloss.Width(btn)
 			if pos+bw > innerW {
 				break
 			}
-			segs = append(segs, btn)
 			groupXs = append(groupXs, pos)
 			groupWs = append(groupWs, bw)
 			groupVals = append(groupVals, val)
@@ -777,7 +783,7 @@ func (m *Model) focusName() string {
 func (m *Model) statusView() string {
 	text := m.status
 	if text == "" {
-		text = "Tab 切换焦点 | 侧边栏 1=库 2=视图 3=节点 · ↑↓/PgUp/PgDn/滚轮 · Enter 预览 | SQL Alt+Enter 执行 · Ctrl+Y 复制 · Ctrl+E 格式导出 · Ctrl+H 历史 | v 行详情 · Ctrl+R 活跃查询 · 右键菜单 · Ctrl+Q 返回 · Ctrl+C 退出"
+		text = "Tab 切换焦点 | 侧边栏 1=库 2=视图 3=节点 · ↑↓/PgUp/PgDn/滚轮 · Enter 预览 | SQL Ctrl+S/F5 执行 · Ctrl+Y 复制 · Ctrl+E 格式导出 · Ctrl+H 历史 | v 行详情 · Ctrl+R 活跃查询 · 右键菜单 · Ctrl+Q 返回 · Ctrl+C 退出"
 	}
 	var styled string
 	if m.statusOK {
@@ -976,7 +982,7 @@ func (m *Model) editorView() string {
 
 	title := styleTitle.Render("SQL")
 	if m.focus == focusEditor {
-		title += styleMuted.Render("  (Alt+Enter 执行 · Tab 切换)")
+		title += styleMuted.Render("  (Ctrl+S/F5 执行 · Tab 切换)")
 	}
 	body := clipLines(m.editor.View(), innerH-1)
 	content := padCell(title, innerW) + "\n" + body
