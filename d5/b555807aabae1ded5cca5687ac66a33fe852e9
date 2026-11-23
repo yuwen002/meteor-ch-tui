@@ -1,0 +1,41 @@
+PLAN.md
+  s_bf4ceae60be48c::t_54e193b02cc52a 218
+README.md
+  s_bf4ceae60be48c::t_b115647d47111b 87-88
+CHANGELOG.md
+  s_bf4ceae60be48c::t_b3f74066cf25fe 14
+  s_bf4ceae60be48c::t_6089d57c558725 31
+internal/ui/util.go
+  s_bf4ceae60be48c::t_134e3d382e32f5 45-49
+internal/ui/manager.go
+  s_bf4ceae60be48c::t_36392af61c9b76 822-833
+  s_bf4ceae60be48c::t_4f00d71eb02ebc 344-347
+  s_bf4ceae60be48c::t_e347df1f9c5f69 283-320
+internal/ui/group_hint_test.go
+  s_bf4ceae60be48c::t_ec79806f97952f 1-56,59-62,65-71,73-74,77-78,81-82,85-117
+  s_bf4ceae60be48c::t_fa42040b465013 57-58,63-64,72,75-76,79-80,83-84
+internal/ui/help.go
+  s_bf4ceae60be48c::t_ea2eb634d6eac3 18
+internal/ui/views.go
+  s_bf4ceae60be48c::t_b4520dcdf746ea 11
+  s_bf4ceae60be48c::t_b24f25e83914ab 290-291,294-311,315-319
+  s_bf4ceae60be48c::t_8a7d33dcc157cb 292-293,312-314
+  s_bf4ceae60be48c::t_1998c446364858 351-354
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "d5b555807aabae1ded5cca5687ac66a33fe852e9",
+  "prompts": {},
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 235
+    }
+  }
+}
