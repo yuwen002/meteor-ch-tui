@@ -1,0 +1,48 @@
+README.md
+  s_bf4ceae60be48c::t_d38086fed18a5c 87
+  s_bf4ceae60be48c::t_8d4f77195010cc 95
+CHANGELOG.md
+  s_bf4ceae60be48c::t_9f6f1068e52f64 14-15
+internal/ui/query_shortcut_test.go
+  h_a3f313f3d96276 1-25,27-29,31-33
+  s_bf4ceae60be48c::t_240dae49cb4b50 26,30
+internal/ui/query.go
+  s_bf4ceae60be48c::t_ae544e457ef5af 15
+internal/ui/model.go
+  s_bf4ceae60be48c::t_ad03381922ade4 410
+internal/ui/views.go
+  s_bf4ceae60be48c::t_62e2c15b9bf1ee 786
+  s_bf4ceae60be48c::t_ee85a3c0e22476 985
+  s_bf4ceae60be48c::t_af6a08b55b7a39 301,307-313
+internal/ui/group_hint_test.go
+  s_bf4ceae60be48c::t_ba2ffa9f9535d5 88-110
+ACCEPTANCE_CHECKLIST.md
+  s_bf4ceae60be48c::t_5c22ef55b60336 27
+  s_bf4ceae60be48c::t_1dc6744ec9420f 23
+internal/ui/help.go
+  s_bf4ceae60be48c::t_f3d06c8748be72 23
+internal/ui/tablepane.go
+  s_bf4ceae60be48c::t_8a9de8f7813137 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "26.9.9",
+  "base_commit_sha": "24100b64bbe2102cc6a5841f5803d7a27cd0fcae",
+  "prompts": {},
+  "humans": {
+    "h_a3f313f3d96276": {
+      "author": "liuxingyu <yuwen002@163.com>"
+    }
+  },
+  "sessions": {
+    "s_bf4ceae60be48c": {
+      "agent_id": {
+        "tool": "codebuddy",
+        "id": "d456c265b7744d22852792358eba6285",
+        "model": "hy4flash-free"
+      },
+      "human_author": "liuxingyu <yuwen002@163.com>",
+      "generated_lines": 45
+    }
+  }
+}
