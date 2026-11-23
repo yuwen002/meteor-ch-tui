@@ -8,10 +8,74 @@
 - [ ] **重启回读**：完全退出程序 → 重新打开 → 编辑该连接，确认密码框自动回填正确密码。
 - [ ] **密码真能用**：用该连接执行一条 SQL（如 `SELECT 1`），确认认证成功。
 - [ ] **凭据条目存在**：Windows 执行 `cmdkey /list`，确认有 `meteor-ch-tui` 相关条目（macOS/Linux 用钥匙串 / Secret Service 工具查）。
+  <details><summary>详细验证步骤（点击展开）</summary>
+
+  **Windows（凭据管理器）**
+  1. 打开 PowerShell，执行：`cmdkey /list`
+  2. 在输出里找 `Target:` 含 `meteor-ch-tui` 的条目。本机实测格式如下（已存在两条，对应你工程机上的真实连接）：
+     ```
+     Target: LegacyGeneric:target=meteor-ch-tui:临港测试
+     Type: Generic
+     User: 临港测试
+     ```
+     其中 `User:` 就是连接名，`target=meteor-ch-tui:<连接名>` 是密钥环键。
+  3. 只要保存过带密码的连接，就应有对应条目；保存了 N 个带密码连接，应有 N 条 `meteor-ch-tui` 条目。
+  4. （可选）按 `Win+R` 输入 `control /name Microsoft.CredentialManager` 打开图形界面，在「普通凭据」中同样能看到。
+
+  **macOS（钥匙串）**
+  - 命令行：`security find-generic-password -s meteor-ch-tui -a <连接名> -w`（能打印出密码即为存在）。
+  - 或打开「钥匙串访问」App，搜索 `meteor-ch-tui`。
+
+  **Linux（Secret Service / libsecret）**
+  - 若装了 `secret-tool`：`secret-tool lookup service meteor-ch-tui username <连接名>`，输出密码即为存在。
+  - 无 `secret-tool` 时，可在有 D-Bus 的桌面环境用「密码和密钥」（Seahorse）查看。
+
+  > 注意：无头 Linux 无 D-Bus/Secret Service 时会走降级路径（见第 14 项），此时**不会有**密钥环条目，密码以明文留在 config.json，属预期行为。
+
+  </details>
 - [ ] **重命名迁移**：把连接改名 → 检查凭据管理器，确认新名有条目、旧名条目已清除。
 - [ ] **删除清理**：删除连接 → 确认凭据管理器中对应条目被移除。
 - [ ] **明文导出确认**：导出弹窗按 `Tab` 开启「包含密码」→ 应弹「安全提醒」→ 按 `Esc` 保持关闭、按 `Enter` 开启；开启后导出的文件确实含明文密码。
 - [ ] **降级路径**（可选，需无密钥环环境）：在 Linux 无头容器里保存带密码连接，确认降级为 config.json 明文且功能不中断。
+  <details><summary>详细验证步骤（点击展开）</summary>
+
+  目标：模拟「系统密钥环不可用」，确认程序**不崩溃、不丢密码**，自动降级为把明文写回 config.json。
+
+  **方式一：WSL（本机可用，`docker-desktop` 发行版无 D-Bus，天然满足）**
+  1. 交叉编译 Linux 版（在项目根目录 PowerShell 执行）：
+     ```powershell
+     $env:GOOS='linux'; $env:GOARCH='amd64'; $env:CGO_ENABLED='0'
+     go build -o meteor-ch-tui-linux ./...
+     Remove-Item Env:\GOOS, Env:\GOARCH, Env:\CGO_ENABLED
+     ```
+  2. 把二进制送进 WSL 并运行（WSL 无 `/mnt/c` 挂载时用管道传输）：
+     ```powershell
+     Get-Content .\meteor-ch-tui-linux -Encoding Byte -Raw | `
+       wsl -d docker-desktop -- sh -c 'cat > /tmp/mct && chmod +x /tmp/mct && HOME=/tmp/mct-home /tmp/mct'
+     ```
+  3. 在 WSL 里新建带密码的连接并保存，然后查看 `/tmp/mct-home/.meteor-ch-tui/config.json`：应能看到 `password` 字段是**明文**（不是 `<stored-in-keyring>`），且退出重开后密码仍在、连接可用。
+  4. 清理：`wsl -d docker-desktop -- rm -f /tmp/mct`。
+
+  **方式二：Docker 容器（更接近 CI/服务器）**
+  1. 启动一个无 D-Bus 的 Linux 容器并挂载项目编译产物：
+     ```powershell
+     docker run -it --rm -v "$PWD:/work" alpine:3.20 sh
+     ```
+  2. 容器内运行 `/work/meteor-ch-tui-linux`，同样新建带密码连接并保存。
+  3. `cat /root/.meteor-ch-tui/config.json` 确认密码为明文、`<stored-in-keyring>` 占位符不出现；重启进程确认密码可读回。
+
+  **方式三：只需验证逻辑（无需 Linux）**
+  - 单元测试已覆盖该分支：`internal/configstore/credentials_test.go` 的 `TestSaveFallsBackToPlaintextWhenBackendFails` 用 `fail=true` 的 mock 后端模拟密钥环不可用，断言 `Save()` 不返回错误且密码以明文留在 config.json。运行：`go test ./internal/configstore/... -run TestSaveFallsBackToPlaintextWhenBackendFails -count=1 -v`。
+
+  **预期结果（三种方式一致）**
+  - 程序不崩溃、保存成功；
+  - config.json 中该连接 password 为**真实明文**（非占位符）；
+  - 退出重开后编辑该连接，密码框自动回填、连接认证成功；
+  - 密钥环中**不会**产生对应条目。
+
+  > 说明：降级是刻意设计——无头/CI 环境没有 Secret Service，优先保证功能可用。明文文件的权限仍为 `0600`（目录 `0700`）。因此生产部署建议提供 D-Bus/密钥环，或接受明文存储风险。
+
+  </details>
 
 ## P0：批量连接操作
 
