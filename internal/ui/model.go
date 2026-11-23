@@ -289,6 +289,11 @@ type Model struct {
 	mgrBatchMoveSel  int
 	mgrBatchMoveRect modalRect
 
+	// 新建/编辑连接时的分组选择弹层（弹出列表，替代表单下方快捷行）。
+	mgrGroupPickerOpen bool
+	mgrGroupPickerSel  int
+	mgrGroupPickerRect modalRect
+
 	// 删除确认弹窗，叠加在其它弹窗之上。
 	confirm     pendingConfirm
 	confirmRect modalRect
@@ -592,6 +597,9 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	if m.mgrBatchMoveOpen {
 		return m.handleBatchMoveKey(key)
 	}
+	if m.mgrGroupPickerOpen {
+		return m.handleGroupPickerKey(msg, key)
+	}
 	if m.confirm.kind != confirmNone {
 		return m.handleConfirmKey(key)
 	}
@@ -745,6 +753,9 @@ func (m *Model) handleMouse(msg tea.MouseMsg) (tea.Model, tea.Cmd) {
 	}
 	if m.mgrBatchMoveOpen {
 		return m.handleBatchMoveMouse(msg, isClick, isWheelUp, isWheelDown)
+	}
+	if m.mgrGroupPickerOpen {
+		return m.handleGroupPickerMouse(msg, isClick, isWheelUp, isWheelDown)
 	}
 	if m.confirm.kind != confirmNone {
 		return m.handleConfirmMouse(msg, isClick)

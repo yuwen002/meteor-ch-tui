@@ -328,6 +328,11 @@ func (m *Model) handleMgrAddKey(msg tea.KeyMsg, key string) (tea.Model, tea.Cmd)
 		return m, nil
 	case "ctrl+t":
 		return m.startConnTest()
+	case "ctrl+g":
+		if mgrAddFieldsInfo[m.mgrAddFieldIdx].name == "分组" {
+			m.openGroupPicker()
+		}
+		return m, nil
 	case "tab":
 		m.mgrAddFieldIdx = (m.mgrAddFieldIdx + 1) % len(mgrAddFieldsInfo)
 		m.focusMgrAddField()
@@ -819,18 +824,6 @@ func (m *Model) handleMgrAddModalMouse(msg tea.MouseMsg, isClick bool) (tea.Mode
 		return m, nil
 	}
 
-	// 已有分组快捷项：点击后填入分组输入框。
-	if relY == r.groupRow {
-		for i, x := range r.groupXs {
-			if i < len(r.groupWs) && i < len(r.groupVals) &&
-				relX >= x && relX < x+r.groupWs[i] {
-				m.mgrAddGroup.SetValue(r.groupVals[i])
-				m.mgrAddGroup.CursorEnd()
-				return m, nil
-			}
-		}
-	}
-
 	fieldIdx := relY - r.fieldStart
 	if fieldIdx < 0 || fieldIdx >= r.fieldCount {
 		return m, nil
@@ -839,6 +832,9 @@ func (m *Model) handleMgrAddModalMouse(msg tea.MouseMsg, isClick bool) (tea.Mode
 	m.focusMgrAddField()
 	if relY == r.protocolRow {
 		m.toggleMgrAddProtocol()
+	}
+	if mgrAddFieldsInfo[fieldIdx].name == "分组" {
+		m.openGroupPicker()
 	}
 	return m, nil
 }

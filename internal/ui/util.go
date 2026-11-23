@@ -42,11 +42,6 @@ type modalRect struct {
 	filterRow        int
 	filterX, filterW int
 	sortX, sortW     int
-
-	groupRow  int
-	groupXs   []int
-	groupWs   []int
-	groupVals []string
 }
 
 // overlayRect 将 box 叠加到 bg 的中央区域，返回合成结果与 box 的实际矩形。

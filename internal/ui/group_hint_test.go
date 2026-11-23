@@ -26,89 +26,98 @@ func newGroupHintModel(t *testing.T) *Model {
 	return m
 }
 
-func TestAddModalShowsExistingGroups(t *testing.T) {
-	m := newGroupHintModel(t)
-	m.openAddModal()
-
-	plain := ansi.Strip(m.View())
-	if !strings.Contains(plain, "已有分组") {
-		t.Fatalf("add modal missing group hint:\n%s", plain)
-	}
-	// 生产、测试，以及默认组（有连接时才会出现，这里连接都属具名组，默认组应不存在）。
-	for _, needle := range []string{"生产", "测试"} {
-		if !strings.Contains(plain, needle) {
-			t.Fatalf("add modal missing group %q:\n%s", needle, plain)
-		}
-	}
-	if !strings.Contains(plain, "(2)") {
-		t.Fatalf("add modal missing group count (2):\n%s", plain)
-	}
-}
-
-func TestAddModalGroupHintHotspots(t *testing.T) {
-	m := newGroupHintModel(t)
-	m.openAddModal()
-	_ = m.View() // 触发渲染以填充热区
-
-	r := m.addModalRect
-	if r.groupRow <= 0 || len(r.groupXs) == 0 {
-		t.Fatalf("group hint hotspots not populated: %+v", r)
-	}
-	// 点击第一个分组应填入其名称（Groups() 对无 GroupOrder 的分组按名称排序）。
-	first := r.groupVals[0]
-	m.handleMouse(tea.MouseMsg{
-		Action: tea.MouseActionPress, Button: tea.MouseButtonLeft,
-		X: r.left + r.groupXs[0] + 1, Y: r.top + r.groupRow,
-	})
-	if got := m.mgrAddGroup.Value(); got != first {
-		t.Fatalf("group after click = %q, want %q", got, first)
-	}
-}
-
-func TestAddModalGroupCycleByKeyboard(t *testing.T) {
+func openGroupPickerAtGroupField(t *testing.T) *Model {
+	t.Helper()
 	m := newGroupHintModel(t)
 	m.openAddModal()
 	m.mgrAddFieldIdx = 1 // 分组字段
-	vals := m.mgrAddGroupValues()
+	m.handleKey(tea.KeyMsg{Type: tea.KeyCtrlG})
+	if !m.mgrGroupPickerOpen {
+		t.Fatal("Ctrl+G should open the group picker")
+	}
+	return m
+}
 
-	m.handleKey(tea.KeyMsg{Type: tea.KeyRight})
-	if got := m.mgrAddGroup.Value(); got != vals[0] {
-		t.Fatalf("group after first right = %q, want %q", got, vals[0])
+func TestGroupPickerOpensAndListsGroups(t *testing.T) {
+	m := openGroupPickerAtGroupField(t)
+	plain := ansi.Strip(m.View())
+	if !strings.Contains(plain, "选择分组") {
+		t.Fatalf("picker title missing:\n%s", plain)
 	}
-	m.handleKey(tea.KeyMsg{Type: tea.KeyRight})
-	if got := m.mgrAddGroup.Value(); got != vals[1] {
-		t.Fatalf("group after second right = %q, want %q", got, vals[1])
-	}
-	m.handleKey(tea.KeyMsg{Type: tea.KeyLeft})
-	if got := m.mgrAddGroup.Value(); got != vals[0] {
-		t.Fatalf("group after left = %q, want %q", got, vals[0])
+	for _, needle := range []string{"生产", "测试", "(2)", "(1)"} {
+		if !strings.Contains(plain, needle) {
+			t.Fatalf("picker missing %q:\n%s", needle, plain)
+		}
 	}
 }
 
-func TestAddModalGroupHintHighlightsCurrent(t *testing.T) {
+func TestGroupPickerNotShownInlineBelowForm(t *testing.T) {
 	m := newGroupHintModel(t)
 	m.openAddModal()
-	vals := m.mgrAddGroupValues()
-	// 选中第一个分组，当前项应以高亮按钮样式渲染。
-	m.mgrAddGroup.SetValue(vals[0])
-
-	view := m.View()
-	plain := ansi.Strip(view)
-	if !strings.Contains(plain, "已有分组") {
-		t.Fatalf("group hint missing:\n%s", plain)
-	}
-	// 高亮样式带背景色，原始 View 中该分组文本出现次数应多于纯文本一次
-	// （styleBtnOK 与 styleBtnMuted 的差异通过 ANSI 转义体现）。
-	selectedGroup := m.cs.Groups()[0]
-	if !strings.Contains(plain, selectedGroup) {
-		t.Fatalf("selected group %q not rendered:\n%s", selectedGroup, plain)
-	}
-	if strings.Contains(view, styleBtnOK.Render(" "+selectedGroup+" ")) == false {
-		t.Fatalf("selected group not highlighted with styleBtnOK:\n%s", view)
+	// 未打开弹层时，表单内不应再内嵌"已有分组"快捷行。
+	plain := ansi.Strip(m.View())
+	if strings.Contains(plain, "已有分组") {
+		t.Fatalf("inline group hint should be removed:\n%s", plain)
 	}
 }
 
-func TestAddModalGroupHintIncludesDefault(t *testing.T) {
+func TestGroupPickerKeyboardSelectAndConfirm(t *testing.T) {
+	m := openGroupPickerAtGroupField(t)
+	vals := m.groupPickerValues()
+
+	m.handleKey(tea.KeyMsg{Type: tea.KeyDown})
+	if m.mgrGroupPickerSel != 1 {
+		t.Fatalf("sel = %d, want 1", m.mgrGroupPickerSel)
+	}
+	m.handleKey(tea.KeyMsg{Type: tea.KeyEnter})
+	if m.mgrGroupPickerOpen {
+		t.Fatal("picker should close after confirm")
+	}
+	if got := m.mgrAddGroup.Value(); got != vals[1] {
+		t.Fatalf("group = %q, want %q", got, vals[1])
+	}
+}
+
+func TestGroupPickerEscKeepsValue(t *testing.T) {
+	m := openGroupPickerAtGroupField(t)
+	m.mgrAddGroup.SetValue("自定义")
+	m.handleKey(tea.KeyMsg{Type: tea.KeyEsc})
+	if m.mgrGroupPickerOpen {
+		t.Fatal("picker should close on Esc")
+	}
+	if got := m.mgrAddGroup.Value(); got != "自定义" {
+		t.Fatalf("value changed after cancel: %q", got)
+	}
+}
+
+func TestGroupPickerMouseClickFills(t *testing.T) {
+	m := openGroupPickerAtGroupField(t)
+	_ = m.View() // 填充热区
+	r := m.mgrGroupPickerRect
+	if r.w == 0 || r.h == 0 {
+		t.Fatal("picker rect not populated")
+	}
+	vals := m.groupPickerValues()
+	idx := 0
+	for i, v := range vals {
+		if v == "测试" {
+			idx = i
+			break
+		}
+	}
+	m.handleMouse(tea.MouseMsg{
+		Action: tea.MouseActionPress, Button: tea.MouseButtonLeft,
+		X: r.left + 4, Y: r.top + r.listStart + idx,
+	})
+	if m.mgrGroupPickerOpen {
+		t.Fatal("picker should close after click")
+	}
+	if got := m.mgrAddGroup.Value(); got != "测试" {
+		t.Fatalf("group after click = %q, want 测试", got)
+	}
+}
+
+func TestGroupPickerDefaultMapsToEmpty(t *testing.T) {
 	cs := &configstore.ConfigFile{
 		Connections: []configstore.SavedConnection{{Name: "x", Host: "x.local", Group: ""}},
 	}
@@ -117,24 +126,22 @@ func TestAddModalGroupHintIncludesDefault(t *testing.T) {
 	m.height = 40
 	m.appMode = appManager
 	m.openAddModal()
+	m.mgrAddFieldIdx = 1
+	m.handleKey(tea.KeyMsg{Type: tea.KeyCtrlG})
 
-	plain := ansi.Strip(m.View())
-	if !strings.Contains(plain, configstore.DefaultGroupName) {
-		t.Fatalf("default group not shown:\n%s", plain)
-	}
-	// 点击默认组应填入空字符串，避免把"(默认)"当字面量存进配置。
-	r := m.addModalRect
-	for i := range r.groupVals {
-		if r.groupVals[i] == "" {
-			m.handleMouse(tea.MouseMsg{
-				Action: tea.MouseActionPress, Button: tea.MouseButtonLeft,
-				X: r.left + r.groupXs[i] + 1, Y: r.top + r.groupRow,
-			})
-			if got := m.mgrAddGroup.Value(); got != "" {
-				t.Fatalf("default group filled as %q, want empty", got)
-			}
-			return
+	vals := m.groupPickerValues()
+	// 默认组位于 vals 中，其值为空字符串。
+	found := false
+	for _, v := range vals {
+		if v == "" {
+			found = true
 		}
 	}
-	t.Fatal("default group option not found in hotspots")
+	if !found {
+		t.Fatalf("default group not mapped to empty: %+v", vals)
+	}
+	plain := ansi.Strip(m.View())
+	if !strings.Contains(plain, configstore.DefaultGroupName) {
+		t.Fatalf("default group not shown in picker:\n%s", plain)
+	}
 }
